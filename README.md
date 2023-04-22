@@ -1,1 +1,0 @@
-# alexanderPolosatov.github.io
