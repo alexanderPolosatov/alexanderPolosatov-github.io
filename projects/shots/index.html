@@ -4,9 +4,11 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
-        html, body{
+        html,
+        body {
             height: 100%;
         }
+
         body {
             margin: 0px;
             overflow: hidden;
@@ -16,20 +18,43 @@
 
 <body>
     <script>
-        const searchParams = new URLSearchParams(location.search);
-        const pageAddress = searchParams.get('url');
-        const frameWidth = searchParams.get('width') ?? '100%';
-        const frameHeight = searchParams.get('height') ?? '100%';
+        (() => {
+            function getFrameSettings() {
+                const searchParams = new URLSearchParams(location.search);
+                const pageAddress = searchParams.get('url');
+                const frameWidth = searchParams.get('width') ?? '100%';
+                const frameHeight = searchParams.get('height') ?? '100%';
 
-        const iframe = document.createElement('iframe');
-        iframe.setAttribute('width', frameWidth);
-        iframe.setAttribute('height', frameHeight);
-        iframe.setAttribute('frameborder', 0);
-        iframe.setAttribute('allowfullscreen', true);
-        iframe.setAttribute('allow', 'autoplay');
-        iframe.setAttribute('src', pageAddress);
+                return {
+                    'width': frameWidth,
+                    'height': frameHeight,
+                    'frameborder': 0,
+                    'allowfullscreen': true,
+                    'allow': 'autoplay',
+                    'src': pageAddress
+                };
+            }
 
-        document.body.appendChild(iframe);
+            function createMainFrame() {
+                const iframe = document.createElement('iframe');
+                const frameSettings = getFrameSettings();
+
+                for (let key in frameSettings) {
+                    iframe.setAttribute(key, frameSettings[key]);
+                }
+
+                document.body.appendChild(iframe);
+            }
+
+            window.app = { createMainFrame };
+
+        })();
+    </script>
+    <script>
+        (() => {
+            app.createMainFrame();
+        })();
     </script>
 </body>
+
 </html>
