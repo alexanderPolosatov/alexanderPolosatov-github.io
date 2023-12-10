@@ -29,8 +29,12 @@ jobs:
       env:
         GH_TOKEN: ${{ secrets.PUBLISH_TOKEN }}
       run: |
-        git config --global user.name 'GitHub Actions'
-        git config --global user.email 'actions@github.com'
-        git add .
-        git commit -m "Prepare data"
-        git push https://${GH_TOKEN}@github.com/${{ github.repository }}.git HEAD:${{ github.ref }}
+        if [[ -n $(git status --porcelain) ]]; then
+          git config --global user.name 'GitHub Actions'
+          git config --global user.email 'actions@github.com'
+          git add .
+          git commit -m "Remove spaces from JSON file"
+          git push
+        else
+          echo "No changes to commit."
+        fi
