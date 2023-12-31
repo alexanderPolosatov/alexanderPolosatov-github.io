@@ -6,18 +6,23 @@ const STATIC_DATA_FOLDER = './static_data';
 const RAW_DATA_FILE_NAME = 'raw_data.json';
 const DIST_DATA_FILE_NAME = 'data.json';
 
-function removeSpacesAndNewlinesOutsideQuotes(inputFilePath, outputFilePath) {
+function uglifyFileContent(content) {
+    const uglifiedContent = content.replace(/("[^"]*")|\s/g, (match, group1) => {
+        if (group1) {
+            return group1;
+        }
+        return '';
+    });
+
+    return uglifiedContent;
+}
+
+function processFile(inputFilePath, outputFilePath) {
     try {
         const content = readFileSync(inputFilePath, 'utf-8');
+        const uglifiedContent = uglifyFileContent(content);
 
-        const processedContent = content.replace(/("[^"]*")|\s/g, (match, group1) => {
-            if (group1) {
-                return group1;
-            }
-            return '';
-        });
-
-        writeFileSync(outputFilePath, processedContent, 'utf-8');
+        writeFileSync(outputFilePath, uglifiedContent, 'utf-8');
         console.log(`Data of ${inputFilePath} file prepared`);
     } catch (error) {
         console.error('Error:', error.message);
@@ -32,14 +37,12 @@ function prepareProjects(projectsFolders) {
         const inputFilePath = join(projectFolder, RAW_DATA_FILE_NAME);
         const outputFilePath = join(distFolder, DIST_DATA_FILE_NAME);
 
-        removeSpacesAndNewlinesOutsideQuotes(inputFilePath, outputFilePath);
+        processFile(inputFilePath, outputFilePath);
     });
 }
 
-function main() {
+(function main() {
     const allProjectsFolders = getAllDirs(STATIC_DATA_FOLDER);
 
     prepareProjects(allProjectsFolders);
-}
-
-main();
+})();
