@@ -3,7 +3,7 @@
     "version": "0.1.0",
     "private": false,
     "scripts": {
-        "build": "ts-node ./build_scripts/prepare_data.ts"
+        "build": "ts-node ./build_scripts/uglify_data.ts; ts-node ./build_scripts/separate_data.ts"
     },
     "browserslist": {
         "production": [
